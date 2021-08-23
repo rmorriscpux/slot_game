@@ -1,0 +1,15 @@
+body{
+    justify-content: center;
+}
+
+/* div */
+div.wrapper{
+    width: 1000px;
+    display: block;
+}
+div.flex-row{
+    display: flex;
+}
+div.flex-box{
+    flex: 1;
+}

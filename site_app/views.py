@@ -1,0 +1,155 @@
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.conf import settings
+from .models import User, GamesPlayed
+from .slot import Slot
+import bcrypt
+
+# index
+# Path: /
+# Main register/login page.
+def index(request):
+    return render(request, "index.html")
+
+# register
+# Path: /register/
+# Register a new user.
+def register(request):
+    if request.method == "POST":
+        # Validate form data.
+        errors = User.objects.reg_validation(request.POST)
+        if errors:
+            for msg in errors.values():
+                messages.error(request, msg)
+            return redirect("/")
+
+        # No errors, create new user.
+        new_user = User.objects.create(
+            first_name = request.POST['first_name'],
+            last_name = request.POST['last_name'],
+            username = request.POST['username'],
+            email = request.POST['email'],
+            pw_hash = bcrypt.hashpw(request.POST['pw'].encode(), bcrypt.gensalt()).decode(),
+            birthday = request.POST['dob'] # Model converts to date object.
+        )
+
+        # Start session and finish up.
+        request.session['user_id'] = new_user.id
+        messages.success(request, "Registration successful!")
+        return redirect("/user/")
+
+    else: # Got here by some other means. Go to reg/login page.
+        return redirect("/")
+
+# login
+# Path: /login/
+# Log in and go to user page if successful, otherwise return to reg/login page.
+def login(request):
+    if request.method == "POST":
+        # Get user. Go back to login page if not found.
+        find_user = User.objects.filter(username=request.POST['username'])
+        if not find_user:
+            messages.error(request, "Invalid credentials.")
+            request.session.flush()
+            return redirect("/")
+        
+        current_user = find_user[0]
+        # Check the password.
+        if bcrypt.checkpw(request.POST['pw'].encode(), find_user[0].pw_hash.encode()):
+            request.session['user_id'] = find_user[0].id
+            messages.success(request, "Login successful!")
+            return redirect("/user/")
+        else: # Invalid password.
+            messages.error(request, "Invalid credentials.")
+            request.session.flush()
+            return redirect("/")
+
+    else:
+        return redirect("/")
+
+# logout
+# Path: /logout/
+# Log out and go to main reg/login page.
+def logout(request):
+    request.session.flush()
+    messages.success(request, "Logout successful.")
+    return redirect("/")
+
+# game_page
+# Path: /game/
+# Go to the game page if logged in. Give it the last game results if they exist.
+def game_page(request):
+    # Session check
+    if 'user_id' not in request.session:
+        return redirect("/")
+
+    context = {}
+    # Get game result dict object if exists. This comes redirected from game_play or persistence in the session.
+    if 'game_result' in request.session:
+        context['game_result'] = request.session['game_result']
+    else: # Populate with default values.
+        context['game_result'] = {
+            'lines_played' : 1,
+            'credits_won' : 0,
+            'win_lines' : {},
+        }
+        context['current_user'] = User.objects.get(id=request.session['user_id'])
+    
+    return render(request, "game.html", context)
+
+# user_info
+# Path: /user/
+# Direct logged in user to their user page.
+def user_info(request):
+    # Session Check
+    if 'user_id' not in request.session:
+        return redirect("/")
+
+    # Get user data.
+    current_user = User.objects.get(id=request.session['user_id'])
+    context = {
+        'username' : current_user.username,
+        'user_first_name' : current_user.first_name,
+        'user_last_name' : current_user.last_name,
+        'user_email' : current_user.email,
+        'user_credit_balance' : current_user.credit_balance,
+        'user_credits_played' : current_user.credits_played,
+        'user_credits_won' : current_user.credits_won,
+    }
+    
+    return render(request, "user.html", context)
+
+def show_history(request):
+    pass
+
+# add_credit
+# Path: /user/add_credit/
+def add_credit(request):
+    # Session Check
+    if 'user_id' not in request.session:
+        return redirect("/")
+
+    if request.method == "POST":
+        current_user = User.objects.get(id=request.session['user_id'])
+        current_user.credit_balance += request.POST['amount']
+        current_user.save()
+        messages.success(request, "Credits added successfully!")
+    return redirect("/user/")
+
+if settings.DEBUG:
+    # test_page
+    # Path: /test/
+    def test_page(request):
+        my_game = Slot().play(5).print_window()
+        print("Played: " + str(my_game.game_result['credits_played']))
+        print("   Won: " + str(my_game.game_result['credits_won']))
+        for line, win in my_game.game_result['wins'].items():
+            print(line + " pays " + str(win))
+        context = {
+            'window' : my_game.window,
+            'played' : my_game.game_result['credits_played'],
+            'total_won' : my_game.game_result['credits_won'],
+            'wins' : my_game.game_result['wins'],
+            'symbol' : "Banana"
+        }
+        return render(request, "test_page.html", context)

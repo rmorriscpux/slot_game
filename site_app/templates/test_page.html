@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        div.reel_window{
+            background-color: #00007f;
+            display: flex;
+            width: 640px;
+        }
+        div.reel{
+            background-color: #ffffff;
+            flex: 1;
+            display: block;
+            justify-content: center;
+            border: 1px solid black;
+            margin: 5px;
+            min-height: 40px;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div class="reel_window">
+        {% for reel in window %}
+        <div class="reel">
+            {% for pos_sym in reel %}
+            <img alt="{{ pos_sym }}" src="{% static 'img/slot_symbols/'|add:pos_sym|add:'.png' %}" class="reel_symbol">
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    <p>Played: {{ played }}</p>
+    <p>Won: {{ total_won }}</p>
+    {% if wins %}
+    <ul id="winlist">
+        {% for line, amt in wins.items %}
+        <li>{{ line }} Pays {{ amt }}.</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <img alt="{{ symbol }}" src="{% static 'img/slot_symbols/'|add:symbol|add:'.png' %}">
+</body>
+</html>

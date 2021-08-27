@@ -1,4 +1,5 @@
 body{
+    display: flex;
     justify-content: center;
 }
 
@@ -9,7 +10,33 @@ div.wrapper{
 }
 div.flex-row{
     display: flex;
+    width: 100%;
 }
 div.flex-box{
     flex: 1;
+}
+div.reel-window{
+    background-color: #00007f;
+    display: flex;
+    width: 640px;
+    padding: 20px 160px;
+}
+div.reel{
+    background-color: #ffffff;
+    flex: 1;
+    display: block;
+    justify-content: center;
+    border: 1px solid black;
+    margin: 5px;
+    min-height: 40px;
+}
+div.header p{
+    text-align: right;
+}
+/* li */
+li.error{
+    color: #ff0000;
+}
+li.success{
+    color: #007f00;
 }

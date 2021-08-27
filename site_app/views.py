@@ -88,14 +88,53 @@ def game_page(request):
     if 'game_result' in request.session:
         context['game_result'] = request.session['game_result']
     else: # Populate with default values.
+        dummy_game = Slot()
         context['game_result'] = {
+            'window' : dummy_game.window,
             'lines_played' : 1,
             'credits_won' : 0,
             'win_lines' : {},
         }
-        context['current_user'] = User.objects.get(id=request.session['user_id'])
+    context['current_user'] = User.objects.get(id=request.session['user_id'])
     
     return render(request, "game.html", context)
+
+# game_spin
+# Path: /game/spin/
+# Play a game if the amount of credits bet is available.
+def game_spin(request):
+    # Session check
+    if 'user_id' not in request.session:
+        return redirect("/")
+
+    if request.method == "POST":
+        current_user = User.objects.get(id=request.session['user_id'])
+        bet = int(request.POST['bet'])
+        # Ensure that the player has enough credits.
+        if current_user.credit_balance < bet:
+            messages.error(request, "Insufficient credits.")
+            return redirect("/game/")
+
+        # Remove bet amount from player credits.
+        current_user.credit_balance -= bet
+        # Play the game with the selected line bet.
+        game_play = Slot().play(bet)
+        # Update player stats.
+        current_user.games_played += 1
+        current_user.credits_played += game_play.game_result['credits_played']
+        current_user.credits_won += game_play.game_result['credits_won']
+        current_user.credit_balance += game_play.game_result['credits_won']
+        current_user.save()
+        # Add game history saving logic here. 
+
+        request.session['game_result'] = {
+            'window' : game_play.window,
+            'lines_played' : game_play.game_result['credits_played'],
+            'credits_won' : game_play.game_result['credits_won'],
+            'win_lines' : game_play.game_result['wins'],
+        }
+
+    return redirect("/game/")
 
 # user_info
 # Path: /user/
@@ -113,6 +152,7 @@ def user_info(request):
         'user_last_name' : current_user.last_name,
         'user_email' : current_user.email,
         'user_credit_balance' : current_user.credit_balance,
+        'user_games_played' : current_user.games_played,
         'user_credits_played' : current_user.credits_played,
         'user_credits_won' : current_user.credits_won,
     }
@@ -130,10 +170,14 @@ def add_credit(request):
         return redirect("/")
 
     if request.method == "POST":
-        current_user = User.objects.get(id=request.session['user_id'])
-        current_user.credit_balance += request.POST['amount']
-        current_user.save()
-        messages.success(request, "Credits added successfully!")
+        to_add = int(request.POST['amount'])
+        if to_add > 0 and to_add <= 100:
+            current_user = User.objects.get(id=request.session['user_id'])
+            current_user.credit_balance += to_add
+            current_user.save()
+            messages.success(request, "Credits added successfully!")
+        else:
+            messages.error(request, "Invalid credit amount. Must be between 1 and 100.")
     return redirect("/user/")
 
 if settings.DEBUG:

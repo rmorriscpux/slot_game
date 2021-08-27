@@ -56,6 +56,7 @@ class User(models.Model):
     pw_hash = models.CharField(max_length=255)
     birthday = models.DateField()
     credit_balance = models.PositiveIntegerField(default=0)
+    games_played = models.PositiveIntegerField(default=0)
     credits_played = models.PositiveIntegerField(default=0)
     credits_won = models.PositiveIntegerField(default=0)
 

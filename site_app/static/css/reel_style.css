@@ -1,0 +1,48 @@
+div.reel-window{
+    background-color: #00007f;
+    display: flex;
+    width: 100%;
+    padding: 20px 160px 20px;
+}
+div.reel{
+    position: relative;
+    background-color: #ffffff;
+    flex: 1;
+    display: block;
+    justify-content: center;
+    border: 1px solid black;
+    margin: 5px;
+    min-height: 40px;
+}
+div.reel-dashboard{
+    justify-content: center;
+    z-index: 3;
+}
+#dashboard{
+    width: 100%;
+    text-align: center;
+    background-color: #00007f;
+    color: #ffffff;
+}
+#dashboard td{
+    border: 1px solid white;
+    border-radius: 7px;
+    font-size: 24pt;
+}
+#dashboard button{
+    font-size: 24pt;
+}
+#dashboard-button{
+    width: 10%;
+}
+img.reel_symbol{
+    width: 100%;
+}
+img.reel_lines{
+    position: absolute;
+    z-index: 2;
+    height: 700px;
+    width: 1000px;
+    object-fit: cover;
+    object-position: 100% 0%;
+}

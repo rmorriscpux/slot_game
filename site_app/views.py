@@ -120,7 +120,8 @@ def game_spin(request):
         current_user.credit_balance -= bet
         # Play the game with the selected line bet.
         game_play = Slot().play(bet)
-        game_play.print_window()
+        if settings.DEBUG:
+            game_play.print_window()
         # Update player stats.
         current_user.games_played += 1
         current_user.credits_played += game_play.game_result['credits_played']

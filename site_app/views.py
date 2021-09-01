@@ -116,9 +116,11 @@ def game_spin(request):
             return redirect("/game/")
 
         # Remove bet amount from player credits.
+        initial_credits = current_user.credit_balance # Save for later.
         current_user.credit_balance -= bet
         # Play the game with the selected line bet.
         game_play = Slot().play(bet)
+        game_play.print_window()
         # Update player stats.
         current_user.games_played += 1
         current_user.credits_played += game_play.game_result['credits_played']
@@ -126,6 +128,19 @@ def game_spin(request):
         current_user.credit_balance += game_play.game_result['credits_won']
         current_user.save()
         # Add game history saving logic here. 
+        user_games = current_user.last_games_played.order_by('created_at')
+        # Remove the earliest games from the queue until the total is less than 10.
+        while len(user_games) >= 10:
+            user_games.first().delete()
+        # Add the new game to history.
+        history_game = GamesPlayed.objects.create(
+            credits_at_start = initial_credits,
+            credits_at_end = current_user.credit_balance,
+            credits_played = game_play.game_result['credits_played'],
+            credits_won = game_play.game_result['credits_won'],
+            reelstops = game_play.game_result['reelstops'],
+            played_by = current_user,
+        )
 
         request.session['game_result'] = {
             'window' : game_play.window,
@@ -159,8 +174,60 @@ def user_info(request):
     
     return render(request, "user.html", context)
 
+# show_history
+# Path: /user/history/?record=<int>
+# Get a game history record and siaplay it.
 def show_history(request):
-    pass
+    # Session check
+    if 'user_id' not in request.session:
+        return redirect('/')
+
+    # Set vars needed.
+    current_user = User.objects.get(id=request.session['user_id'])
+    game_records = current_user.last_games_played.all().order_by('created_at')
+    game_record_count = len(game_records)
+
+    # Case: game_records is empty (user has not played games yet)
+    # Go to history.html page and do the logic there showing that there is no game history.
+    context = {}
+    if game_record_count == 0:
+        context['current_user'] = current_user
+        return render(request, "history.html", context)
+
+    # Take the specific record, with some input handling. Important since we're using GET data.
+    if 'record' not in request.GET:
+        record_index = game_record_count - 1
+    elif not request.GET['record'].isnumeric(): # Seems a bit verbose, but it looks safer.
+        record_index = game_record_count - 1
+    else:
+        record_index = int(request.GET['record'])
+
+    # Boundary check.
+    if record_index < 0:
+        record_index = 0
+    elif record_index >= game_record_count:
+        record_index = game_record_count - 1
+
+    # Rebuild game.
+    game_data = game_records[record_index]
+    game_recall = Slot(game_data.reelstops[0], game_data.reelstops[1], game_data.reelstops[2])
+    game_recall.eval_lines(game_data.credits_played)
+
+    # Now to put together everything needed for the template.
+    context['current_user'] = current_user
+    context['game_result'] = {
+        'window' : game_recall.window,
+        'lines_played' : game_data.credits_played,
+        'credits_won' : game_data.credits_won,
+        'credits_at_start' : game_data.credits_at_start,
+        'credits_at_end' : game_data.credits_at_end,
+        'win_lines' : game_recall.game_result['wins'],
+    }
+    # Needed to determine arrows.
+    context['record_index'] = record_index
+    context['record_count'] = game_record_count
+
+    return render(request, "history.html", context)
 
 # add_credit
 # Path: /user/add_credit/

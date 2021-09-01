@@ -130,7 +130,7 @@ def game_spin(request):
         # Add game history saving logic here. 
         user_games = current_user.last_games_played.order_by('created_at')
         # Remove the earliest games from the queue until the total is less than 10.
-        while len(user_games) >= 10:
+        for i in range(len(user_games), 9, -1):
             user_games.first().delete()
         # Add the new game to history.
         history_game = GamesPlayed.objects.create(
@@ -231,6 +231,7 @@ def show_history(request):
 
 # add_credit
 # Path: /user/add_credit/
+# Add credits to a user account.
 def add_credit(request):
     # Session Check
     if 'user_id' not in request.session:

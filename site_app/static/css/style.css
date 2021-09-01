@@ -15,6 +15,9 @@ div.flex-row{
 div.flex-box{
     flex: 1;
 }
+div.arrow-box{
+    padding: 20px;
+}
 div.header p{
     text-align: right;
 }
@@ -24,4 +27,8 @@ li.error{
 }
 li.success{
     color: #007f00;
+}
+/* img */
+img.arrow{
+    width: 100%;
 }

@@ -17,7 +17,7 @@
         <div class="flex-row">
             <ul id="site_messages">
                 {% for msg in messages %}
-                <li{% if msg.tags %} class="{{ msg.tags }}"{% endif %}>{{ msg }}</li>
+                <li{% if msg.tags %} class="{{ msg.tags }}"{% endif %}>{{ msg }}{% if msg.tags == "warning" %} | <a href="/user/">Profile</a> | <a href="/game/">Game</a> | <a href="/logout/">Log Out</a>{% endif %}</li>
                 {% endfor %}
             </ul>
         </div>

@@ -3,12 +3,16 @@ from django.contrib import messages
 from django.conf import settings
 from .models import User, GamesPlayed
 from .slot import Slot
+from datetime import datetime
 import bcrypt
 
 # index
 # Path: /
 # Main register/login page.
 def index(request):
+    if 'user_id' in request.session:
+        current_user = User.objects.get(id=request.session['user_id'])
+        messages.warning(request, f'Already logged in as {current_user.username}.')
     return render(request, "index.html")
 
 # register
@@ -34,6 +38,7 @@ def register(request):
         )
 
         # Start session and finish up.
+        request.session.flush()
         request.session['user_id'] = new_user.id
         messages.success(request, "Registration successful!")
         return redirect("/user/")
@@ -46,6 +51,7 @@ def register(request):
 # Log in and go to user page if successful, otherwise return to reg/login page.
 def login(request):
     if request.method == "POST":
+        request.session.flush()
         # Get user. Go back to login page if not found.
         find_user = User.objects.filter(username=request.POST['username'])
         if not find_user:
@@ -224,6 +230,7 @@ def show_history(request):
         'credits_at_end' : game_data.credits_at_end,
         'win_lines' : game_recall.game_result['wins'],
     }
+    context['timestamp'] = game_data.created_at.strftime("%b %d %Y, %I:%M:%S %p")
     # Needed to determine arrows.
     context['record_index'] = record_index
     context['record_count'] = game_record_count

@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.conf import settings
-from .models import User, GamesPlayed
+from .models import User, GamesPlayed, Jackpot
 from .slot import Slot
+from .page_display import elid_page_display
 from datetime import datetime
 import bcrypt
 
@@ -255,6 +257,78 @@ def add_credit(request):
         else:
             messages.error(request, "Invalid credit amount. Must be between 1 and 100.")
     return redirect("/user/")
+
+# jackpot_list
+# Path: /jackpots/
+# Render list of jackpots. Users can give kudos.
+def jackpot_list(request):
+    # Session check
+    if 'user_id' not in request.session:
+        return redirect('/')
+
+    context = {}
+    # Get the jackpots, latest hits first, 10 per page.
+    # Maybe set an upper limit on total jackpots available to display?
+    jackpot_pages = Paginator(Jackpot.objects.all().order_by('-created_at'), 10)
+
+    # Determine which page to display. This will be from a GET value normally.
+    if 'page' not in request.GET:
+        display_page = 1
+    elif not request.GET['page'].isnumeric(): # Seems a bit verbose, but it looks safer.
+        display_page = 1
+    elif int(request.GET['page']) not in jackpot_pages.page_range: # Check that the page number is valid. If not, default to 1.
+        display_page = 1
+    else: # We have a valid page number in request.GET['page'].
+        display_page = int(request.GET['page'])
+
+    # Now set the objects to send.
+    context['display_jackpots'] = jackpot_pages.get_page(display_page)
+
+    context['current_page'] = display_page
+    context['page_range'] = elid_page_display(jackpot_pages.page_range, display_page, 1, 2)
+    context['current_user'] = User.objects.get(id=request.session['user_id'])
+
+    return render(request, "jackpot_list.html", context)
+
+# kudos
+# Path: /jackpots/kudos/<int:jackpot_id>/
+# Give kudos to a jackpot win.
+def kudos(request, jackpot_id):
+    # Session check
+    if 'user_id' not in request.session:
+        return redirect('/')
+
+    if request.method == "POST":
+        jp = Jackpot.objects.get(id=jackpot_id)
+        current_user = User.objects.get(id=request.session['user_id'])
+
+        if current_user not in jp.liked_by and current_user != jp.awarded_to:
+            jp.liked_by.add(current_user)
+
+        return redirect(f"/jackpots/?page={request.POST['redirect_page']}")
+
+    else:
+        return redirect("/jackpots/")
+
+# undo_kudos
+# Path: /jackpots/undo_kudos/<int:jackpot_id>/
+# Give kudos to a jackpot win.
+def undo_kudos(request, jackpot_id):
+    # Session check
+    if 'user_id' not in request.session:
+        return redirect('/')
+
+    if request.method == "POST":
+        jp = Jackpot.objects.get(id=jackpot_id)
+        current_user = User.objects.get(id=request.session['user_id'])
+
+        if current_user in jp.liked_by:
+            jp.liked_by.remove(current_user)
+
+        return redirect(f"/jackpots/?page={request.POST['redirect_page']}")
+
+    else:
+        return redirect("/jackpots/")
 
 if settings.DEBUG:
     # test_page

@@ -18,8 +18,8 @@ div.flex-box{
 div.arrow-box{
     padding: 20px;
 }
-div.header p{
-    text-align: right;
+div.header{
+    justify-content: space-between;
 }
 /* li */
 li.error{

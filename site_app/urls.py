@@ -12,6 +12,9 @@ urlpatterns = [
     path('user/', views.user_info),
     path('user/history/', views.show_history),
     path('user/add_credit/', views.add_credit),
+    path('jackpots/', views.jackpot_list),
+    path('jackpots/kudos/<int:jackpot_id>/', views.kudos),
+    path('jackpots/undo_kudos/<int:jackpot_id>/', views.undo_kudos)
 ]
 
 if settings.DEBUG:

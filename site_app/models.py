@@ -62,6 +62,8 @@ class User(models.Model):
 
     # Relationships
     # last_games_played: GamesPlayed objects
+    # jackpots: Jackpot objects
+    # jackpot_kudos: Jackpot many-to-many
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -109,6 +111,17 @@ class GamesPlayed(models.Model):
 
     # Relationships
     played_by = models.ForeignKey(User, related_name="last_games_played", on_delete=models.CASCADE)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Jackpot(models.Model):
+    # Unique Fields
+
+    # Relationships
+    awarded_to = models.ForeignKey(User, related_name="jackpots", on_delete=models.CASCADE)
+    liked_by = models.ManyToManyField(User, related_name="jackpot_kudos")
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)

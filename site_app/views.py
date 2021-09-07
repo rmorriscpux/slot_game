@@ -290,6 +290,7 @@ def jackpot_list(request):
     context['current_page'] = display_page
     context['page_range'] = elid_page_display(jackpot_pages.page_range, display_page, 1, 2)
     context['current_user'] = User.objects.get(id=request.session['user_id'])
+    context['num_pages'] = jackpot_pages.num_pages
 
     return render(request, "jackpot_list.html", context)
 
@@ -305,7 +306,7 @@ def kudos(request, jackpot_id):
         jp = Jackpot.objects.get(id=jackpot_id)
         current_user = User.objects.get(id=request.session['user_id'])
 
-        if current_user not in jp.liked_by and current_user != jp.awarded_to:
+        if current_user not in jp.liked_by.all() and current_user != jp.awarded_to:
             jp.liked_by.add(current_user)
 
         return redirect(f"/jackpots/?page={request.POST['redirect_page']}")
@@ -325,7 +326,7 @@ def undo_kudos(request, jackpot_id):
         jp = Jackpot.objects.get(id=jackpot_id)
         current_user = User.objects.get(id=request.session['user_id'])
 
-        if current_user in jp.liked_by:
+        if current_user in jp.liked_by.all():
             jp.liked_by.remove(current_user)
 
         return redirect(f"/jackpots/?page={request.POST['redirect_page']}")

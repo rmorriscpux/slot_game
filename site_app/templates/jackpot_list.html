@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% load site_app_extras %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,10 +19,10 @@
             <div class="flex-box" id="jackpot_list">
                 {% for jp in display_jackpots %}
                 <p>
-                    {{ jp.awarded_to.username }} hit on {{ jp.created_at }}!<br>
+                    {{ jp.awarded_to.username }} hit on {{ jp.created_at }}!
                     {% if current_user != jp.awarded_to %}
-                        {% if current_user in jp.liked_by %}
-                        Kudos Given!
+                        {% if current_user in jp.liked_by.all %}
+                        <br>Kudos Given!
                         <form action="/jackpots/undo_kudos/{{ jp.id }}/" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="redirect_page" value="{{ current_page }}">
@@ -44,6 +45,11 @@
         <div class="flex-row">
             <div class="flex-box" id="page_list">
                 <p>
+                    {% if current_page == 1 %}
+                    «
+                    {% else %}
+                    <a href="/jackpots/?page={{ current_page|getprev }}">«</a>
+                    {% endif %}
                     {% for pagenum in page_range %}
                         {% if pagenum == "..." or pagenum == current_page %}
                         {{ pagenum }}
@@ -51,6 +57,11 @@
                         <a href="/jackpots/?page={{ pagenum }}">{{ pagenum }}</a>
                         {% endif %}
                     {% endfor %}
+                    {% if current_page == num_pages %}
+                    »
+                    {% else %}
+                    <a href="/jackpots/?page={{ current_page|getnext }}">»</a>
+                    {% endif %}
                 </p>
             </div>
         </div>

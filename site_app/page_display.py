@@ -41,7 +41,7 @@ def elid_page_display(page_range, number, on_each_side=3, on_ends=2):
     elid_list = begin
 
     # Check if the next number after begin is in the middle. If not, add an ellipsis and the entire middle.
-    if after_begin not in middle:
+    if (after_begin not in middle) and (elid_list[len(elid_list)-1] not in middle):
         elid_list.append("...")
         elid_list.extend(middle)
     else:
@@ -50,19 +50,20 @@ def elid_page_display(page_range, number, on_each_side=3, on_ends=2):
                 elid_list.append(num)
     
     # Check if the next number before end is in the middle. If not, add an ellipsis and the entire end.
-    if before_end not in middle:
+    if (before_end not in middle) and (elid_list[len(elid_list)-1] not in end):
         elid_list.append("...")
         elid_list.extend(end)
     else:
         for num in end:
             if num not in elid_list:
-                elid_list.append(end)
+                elid_list.append(num)
 
     return elid_list
 
 if __name__ == "__main__":
-    print(elid_page_display(range(1,21), 10))
-    print(elid_page_display(range(1,21), 10, 0, 3))
-    print(elid_page_display(range(1,21), 3, 2))
-    print(elid_page_display(range(1,21), 18, 2))
-    print(elid_page_display(range(1,5), 3))
+    # print(elid_page_display(range(1,21), 10))
+    # print(elid_page_display(range(1,21), 10, 0, 3))
+    # print(elid_page_display(range(1,21), 3, 2))
+    for i in range(1, 21):
+        print(elid_page_display(range(1, 21), i, 1, 2))
+    # print(elid_page_display(range(1,5), 2))

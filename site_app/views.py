@@ -136,6 +136,9 @@ def game_spin(request):
         current_user.credits_won += game_play.game_result['credits_won']
         current_user.credit_balance += game_play.game_result['credits_won']
         current_user.save()
+        # Add the top award to the jackpot list if hit.
+        if game_play.game_result['top_award']:
+            Jackpot.objects.create(awarded_to=current_user)
         # Add game history saving logic here. 
         user_games = current_user.last_games_played.order_by('created_at')
         # Remove the earliest games from the queue until the total is less than 10.

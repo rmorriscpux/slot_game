@@ -8,6 +8,7 @@ class Slot:
             'credits_played' : 0,
             'credits_won' : 0,
             'wins' : {},
+            'top_award_hit' : False,
         }
         self.window = []
         self.build_window()
@@ -43,6 +44,7 @@ class Slot:
         # Initialize
         self.game_result['wins'] = {}
         self.game_result['credits_won'] = 0
+        self.game_result['top_award'] = False
 
         # Evaluate line by line.
         for i in range(0, lines_played):
@@ -86,6 +88,8 @@ class Slot:
             if line_pay > 0:
                 self.game_result['wins']['Line ' + str(i + 1)] = line_pay
                 self.game_result['credits_won'] += line_pay
+                if line_pay == slot_data.top_award:
+                    self.game_result['top_award'] = True
 
         return self
 

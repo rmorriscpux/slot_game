@@ -26,6 +26,8 @@ line_pays = {
     'Blank' : [0, 0, 0, 0],
 }
 
+top_award = 500;
+
 if __name__ == "__main__":
     pass
     # Add something later.

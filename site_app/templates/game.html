@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/reel_style.css' %}">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/game.js' %}"></script>
     <title>Game</title>
 </head>
 <body>
@@ -15,6 +17,11 @@
         <div class="header flex-row" id="game_header">
             <h2>Welcome, {{ current_user.first_name }}!</h2>
             <p><a href="/user/">Profile</a> | <a href="/jackpots/">Jackpots</a> | <a href="/logout/">Log Out</a></p>
+        </div>
+        <div class="flex-row">
+            <div class="flex-box" id="toggle_button">
+                <button id="show_rules">Show/Hide Pays and Game Rules</button>
+            </div>
         </div>
         <div class="flex-row" id="game_glass">
             <img alt="Paytable" src="{% static 'img/paytable.png' %}" id="paytable">

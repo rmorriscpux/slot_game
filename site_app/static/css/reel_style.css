@@ -18,6 +18,19 @@ div.reel-dashboard{
     justify-content: center;
     z-index: 3;
 }
+#toggle_button{
+    justify-content: center;
+    text-align: center;
+    background-color: #00007f;
+    padding: 5px;
+}
+#toggle_button button{
+    font-size: 18px;
+}
+#game_glass{
+    background-color: #00007f;
+    display: none;
+}
 #dashboard{
     width: 100%;
     text-align: center;

@@ -25,6 +25,7 @@
             </ul>
         </div>
         {% endif %}
+        {% if record_count > 0 %}
         <div class="flex-row" id="game_window">
             <img alt="lines" src="{% static 'img/lines/'|addstr:game_result.lines_played|addstr:'.png' %}" class="reel_lines">
             <div class="reel-window flex-box">
@@ -89,6 +90,13 @@
                 {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="flex-row">
+            <div class="flex-box">
+                <p>No game history available. <a href="/game/">Go play some games!</a></p>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>

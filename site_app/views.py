@@ -204,6 +204,7 @@ def show_history(request):
     context = {}
     if game_record_count == 0:
         context['current_user'] = current_user
+        context['record_count'] = game_record_count
         return render(request, "history.html", context)
 
     # Take the specific record, with some input handling. Important since we're using GET data.

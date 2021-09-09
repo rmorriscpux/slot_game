@@ -262,6 +262,45 @@ def add_credit(request):
             messages.error(request, "Invalid credit amount. Must be between 1 and 100.")
     return redirect("/user/")
 
+# confirm_delete
+# Path: /user/confirm_delete/
+# Go to page to confirm deleting a user account.
+def confirm_delete(request):
+    # Session Check
+    if 'user_id' not in request.session:
+        return redirect("/")
+
+    context = {}
+    context['current_user'] = User.objects.get(id=request.session['user_id'])
+    return render(request, 'delete_confirm.html', context)
+
+# destroy_user
+# Path: /user/destroy/
+# Delete a user after confirmation.
+def destroy_user(request):
+    # Session Check
+    if 'user_id' not in request.session:
+        return redirect("/")
+
+    if request.method == "POST":
+        current_user = User.objects.get(id=request.session['user_id'])
+
+        # Password check.
+        if bcrypt.checkpw(request.POST['pw'].encode(), current_user.pw_hash.encode()):
+            # Password good. Proceed with destroying user account.
+            current_user.delete()
+            request.session.flush()
+            messages.success(request, "Account deleted successfully.")
+            return redirect('/')
+        else:
+            # Invalid password.
+            messages.error(request, "Invalid password.")
+            return redirect('/user/destroy/')
+    
+    else:
+        # Did not get here from the form.
+        return redirect('/user/')
+
 # jackpot_list
 # Path: /jackpots/
 # Render list of jackpots. Users can give kudos.

@@ -120,7 +120,7 @@ class Jackpot(models.Model):
     # Unique Fields
 
     # Relationships
-    awarded_to = models.ForeignKey(User, related_name="jackpots", on_delete=models.CASCADE)
+    awarded_to = models.ForeignKey(User, related_name="jackpots", on_delete=models.CASCADE) # Note: in a real site, user accounts would be deactivated instead of outright deleted.
     liked_by = models.ManyToManyField(User, related_name="jackpot_kudos")
 
     # Timestamps

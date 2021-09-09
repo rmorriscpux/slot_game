@@ -10,7 +10,7 @@ Repository for a simple 3-reel slot machine. This site app stores users and the 
   - Give the user page improved markup.
   - Style the stats on the history page.
   - Style top award history page.
-- Allow users to delete their profiles.
+- ~~Allow users to delete their profiles.~~
 - ~~Add top award history page, with user who hit the top award, and likes. _(many-to-many model)_~~
 - _Add technician user class who can view any players' info and history._
   - _Including page for this. (decide whether to reuse history.html_

@@ -295,7 +295,7 @@ def destroy_user(request):
         else:
             # Invalid password.
             messages.error(request, "Invalid password.")
-            return redirect('/user/destroy/')
+            return redirect('/user/confirm_delete/')
     
     else:
         # Did not get here from the form.

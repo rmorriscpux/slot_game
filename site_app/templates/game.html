@@ -44,7 +44,11 @@
                     {% csrf_token %}
                     <tr>
                         <td>{{ current_user.credit_balance }}</td>
-                        <td><input type="number" min="1" max="5" value="{{ game_result.lines_played }}" name="bet" id="bet"></td>
+                        <td>
+                            <a href="#" class="line-button" id="line_decrement">-</a>
+                            <input type="number" min="1" max="5" value="{{ game_result.lines_played }}" name="bet" id="bet" readonly>
+                            <a href="#" class="line-button" id="line_increment">+</a>
+                        </td>
                         <td>{{ game_result.credits_won }}</td>
                         <td rowspan="2" id="dashboard-button"><button type="submit" id="play_button">Play</button></td>
                     </tr>

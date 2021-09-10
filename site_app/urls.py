@@ -16,7 +16,7 @@ urlpatterns = [
     path('user/destroy/', views.destroy_user),
     path('jackpots/', views.jackpot_list),
     path('jackpots/kudos/<int:jackpot_id>/', views.kudos),
-    path('jackpots/undo_kudos/<int:jackpot_id>/', views.undo_kudos)
+    path('jackpots/undo_kudos/<int:jackpot_id>/', views.undo_kudos),
 ]
 
 if settings.DEBUG:

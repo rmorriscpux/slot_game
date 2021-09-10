@@ -45,6 +45,23 @@ div.reel-dashboard{
 #dashboard button{
     font-size: 24pt;
 }
+#dashboard input{
+    font-size: 24pt;
+    width: 24pt;
+    background-color: #00007f;
+    color: #ffffff;
+    text-align: center;
+    border-width: 0px 1px;
+}
+#dashboard input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+#dashboard input[type=number]::-webkit-inner-spin-button, 
+#dashboard input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+}
 #dashboard-button{
     width: 10%;
 }
@@ -58,4 +75,8 @@ img.reel_lines{
     width: 1000px;
     object-fit: cover;
     object-position: 100% 0%;
+}
+a.line-button{
+    color: #ffffff;
+    text-decoration: none;
 }

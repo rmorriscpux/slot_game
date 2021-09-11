@@ -37,6 +37,9 @@ div.jp-item-2{
 #jackpot_list{
     border: 1px solid black;
 }
+#game_stats{
+    flex: 2;
+}
 /* li */
 li.error{
     color: #ff0000;
@@ -50,4 +53,34 @@ img.arrow{
 }
 #paytable{
     width: 100%;
+}
+/* table */
+#game_stats_table{
+    border-collapse: collapse;
+    width: 100%
+}
+#game_stats_table td{
+    vertical-align: top;
+    border: 1px solid black;
+    padding: 5px;
+}
+#game_stats_table td.category{
+    text-align: right;
+}
+#game_stats_table td.category{
+    text-align: right;
+}
+#game_stats_table tr.tr1{
+    background-color: #cccccc;
+}
+#game_stats_table tr.tr2{
+    background-color: #eeeeee;
+}
+#game_stats_table ul{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+#game_stats_table ul li{
+    padding: 0px;
 }

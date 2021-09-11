@@ -22,6 +22,21 @@ div.arrow-box{
 div.header{
     justify-content: space-between;
 }
+div.jp-item-1{
+    margin: 0px;
+    padding: 1px 10px;
+    background-color: #cccccc;
+    min-height: 110px;
+}
+div.jp-item-2{
+    margin: 0px;
+    padding: 1px 10px;
+    background-color: #eeeeee;
+    min-height: 110px;
+}
+#jackpot_list{
+    border: 1px solid black;
+}
 /* li */
 li.error{
     color: #ff0000;

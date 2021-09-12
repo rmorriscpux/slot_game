@@ -7,7 +7,7 @@ Repository for a simple 3-reel slot machine. This site app stores users and the 
   - ~~Add game rules to the main game page.~~
   - ~~Make line selection larger on game screen, more in line with the rest of the dashboard.~~
   - ~~Allow paytable to be hidden/shown.~~
-  - Give the user page improved markup.
+  - ~~Give the user page improved markup.~~
   - ~~Style the stats on the history page.~~
   - ~~Style top award history page.~~
 - ~~Allow users to delete their profiles.~~

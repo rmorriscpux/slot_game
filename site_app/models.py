@@ -38,7 +38,10 @@ class UserMgr(models.Manager):
             errors['password'] = "Passwords do not match."
         # Check Birthday
         try:
-            entered_birthday = date.fromisoformat(post_data['dob'])
+            # entered_birthday = date.fromisoformat(post_date['dob'])
+            # Python version < 3.7 compatible.
+            date_arr = post_data['dob'].split('-')
+            entered_birthday = date(int(date_arr[0]), int(date_arr[1]), int(date_arr[2]))
         except:
             errors['dob'] = "Invalid date of birth."
         else:

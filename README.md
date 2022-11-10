@@ -2,6 +2,8 @@
 
 Repository for a simple 3-reel slot machine. This site app stores users and the last 10 games played for each user.
 
+Built with Django 2.2 using Python version 3.9.5.
+
 ## To Do List
 - Styling
   - ~~Add game rules to the main game page.~~

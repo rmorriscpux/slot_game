@@ -25,7 +25,7 @@ SECRET_KEY = '1aqm5=_)6#exz1t14^3gx%u-0420tkn8f*7u=y4au1yvo&=@n9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['rcpux-slot-game.herokuapp.com']
 
 
 # Application definition

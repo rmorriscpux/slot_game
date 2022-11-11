@@ -1,0 +1,1 @@
+web: gunicorn slot_game.wsgi --log-file -
